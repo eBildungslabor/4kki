@@ -127,7 +127,7 @@
       },
       {
         name: "Kollaboration",
-        frage: "Wie sehr tausche ich mich mit anderen Menschen aus – oder ersetze ich echten Dialog durch Maschinen-Interaktion?"
+        frage: "Wie sehr tausche ich mich mit anderen Menschen aus – oder ersetze ich Dialog und Kollaboration durch Maschinen-Interaktion?"
       },
       {
         name: "Kritisches Denken",
@@ -140,7 +140,7 @@
     ];
 
     const container = document.getElementById("kompetenzen");
-    const confettiStates = new WeakMap(); // Zustände pro Slider
+    const confettiStates = new WeakMap(); // Konfetti-Zustand pro Slider
 
     kompetenzen.forEach(item => {
       const block = document.createElement("div");
@@ -162,7 +162,7 @@
       slider.max = 100;
       slider.value = 0;
 
-      confettiStates.set(slider, false); // Startzustand
+      confettiStates.set(slider, false); // Anfangszustand
 
       const labels = document.createElement("div");
       labels.className = "slider-labels";
@@ -174,7 +174,7 @@
         fill.style.backgroundColor = getColor(val);
 
         if (val === 100 && !confettiStates.get(slider)) {
-          launchConfetti();
+          launchConfettiFromElement(bar);
           confettiStates.set(slider, true);
         } else if (val < 100) {
           confettiStates.set(slider, false);
@@ -205,11 +205,15 @@
       return "green";
     }
 
-    function launchConfetti() {
+    function launchConfettiFromElement(el) {
+      const rect = el.getBoundingClientRect();
+      const x = (rect.left + rect.width / 2) / window.innerWidth;
+      const y = (rect.bottom - 5) / window.innerHeight;
+
       confetti({
         particleCount: 180,
         spread: 100,
-        origin: { y: 0.6 }
+        origin: { x, y }
       });
     }
   </script>
