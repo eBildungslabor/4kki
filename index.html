@@ -140,6 +140,7 @@
     ];
 
     const container = document.getElementById("kompetenzen");
+    const confettiStates = new WeakMap(); // Zustände pro Slider
 
     kompetenzen.forEach(item => {
       const block = document.createElement("div");
@@ -161,6 +162,8 @@
       slider.max = 100;
       slider.value = 0;
 
+      confettiStates.set(slider, false); // Startzustand
+
       const labels = document.createElement("div");
       labels.className = "slider-labels";
       labels.innerHTML = "<span>wenig</span><span>viel</span>";
@@ -169,7 +172,13 @@
         const val = parseInt(slider.value);
         fill.style.height = `${val}%`;
         fill.style.backgroundColor = getColor(val);
-        checkAllHigh();
+
+        if (val === 100 && !confettiStates.get(slider)) {
+          launchConfetti();
+          confettiStates.set(slider, true);
+        } else if (val < 100) {
+          confettiStates.set(slider, false);
+        }
       });
 
       sliderContainer.appendChild(slider);
@@ -194,12 +203,6 @@
       if (val < 40) return "red";
       if (val < 80) return "orange";
       return "green";
-    }
-
-    function checkAllHigh() {
-      const sliders = document.querySelectorAll("input[type='range']");
-      const allHigh = Array.from(sliders).every(slider => parseInt(slider.value) >= 90);
-      if (allHigh) launchConfetti();
     }
 
     function launchConfetti() {
